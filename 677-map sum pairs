@@ -1,0 +1,95 @@
+//Implement the MapSum class:
+//
+//MapSum() Initializes the MapSum object.
+//void insert(String key, int val) Inserts the key-val pair into the map. If the key already existed, the original key-value pair will be overridden to the new one.
+//int sum(string prefix) Returns the sum of all the pairs' value whose key starts with the prefix.
+// 
+//
+//Example 1:
+//
+//Input
+//["MapSum", "insert", "sum", "insert", "sum"]
+//[[], ["apple", 3], ["ap"], ["app", 2], ["ap"]]
+//Output
+//[null, null, 3, null, 5]
+//
+//Explanation
+//MapSum mapSum = new MapSum();
+//mapSum.insert("apple", 3);  
+//mapSum.sum("ap");           // return 3 (apple = 3)
+//mapSum.insert("app", 2);    
+//mapSum.sum("ap");           // return 5 (apple + app = 3 + 2 = 5)
+
+
+class trie{
+    public :
+    int count;
+    trie * next[26];
+}
+;
+
+class MapSum {
+public:
+    trie * root;
+    /** Initialize your data structure here. */
+    MapSum() {
+         root=new trie();
+        for(int i=0;i<26;i++){
+           root->next[i]=NULL;
+        }
+      root->count=0;
+    }
+    
+    trie * getnode(){
+          trie * root1=new trie();
+        for(int i=0;i<26;i++){
+            root1->next[i]=NULL;
+        }
+        root1->count=0;
+        return root1;
+    }
+    void insert(string key, int val) {
+        trie * temp=root;
+        for(int i=0;i<key.size();i++){
+            if(temp->next[key[i]-'a']==NULL){
+                temp->next[key[i]-'a']=getnode();
+            }
+            temp=temp->next[key[i]-'a'];
+        }
+        temp->count=val;
+    }
+    int summer(trie * root){
+        
+        
+        int a=root->count;
+        
+         for(int i=0;i<26;i++){
+             if(root->next[i]!=NULL)
+            a+=summer(root->next[i]);
+        }
+        
+        return a;
+    }
+    int sum(string prefix) {
+          trie * temp=root;
+        for(int i=0;i<prefix.size();i++){
+             if(temp->next[prefix[i]-'a']==NULL){
+                 return 0;
+             }
+                temp=temp->next[prefix[i]-'a'];
+        }
+         if(temp==NULL){
+                 return 0;
+             }
+        int ans=summer(temp);
+       
+        return ans;
+    }
+};
+
+/**
+ * Your MapSum object will be instantiated and called as such:
+ * MapSum* obj = new MapSum();
+ * obj->insert(key,val);
+ * int param_2 = obj->sum(prefix);
+ */
